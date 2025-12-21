@@ -1,0 +1,253 @@
+/* Dark Blue Theme - BIO 260 Bacteria Tool */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #1a237e; /* Dark blue */
+    color: white;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.app-container {
+    width: 90%;
+    max-width: 1000px;
+    background-color: #151a5f; /* Slightly lighter blue */
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    position: relative;
+    min-height: 80vh;
+}
+
+.navigation {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 20px;
+    padding: 15px;
+    background-color: #1e277e;
+    border-radius: 10px;
+}
+
+.nav-button {
+    background-color: #2962ff; /* Bright blue */
+    color: white;
+    border: none;
+    border-radius: 25px;
+    padding: 12px 25px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.nav-button:hover {
+    background-color: #0039cb;
+    transform: scale(1.05);
+}
+
+.nav-button.active {
+    background-color: #0039cb;
+    box-shadow: 0 0 10px rgba(41, 98, 255, 0.5);
+}
+
+.page {
+    display: block;
+    animation: fadeIn 0.5s;
+}
+
+h1 {
+    color: #bbdefb; /* Light blue */
+    text-align: center;
+    margin-bottom: 10px;
+    font-size: 2rem;
+}
+
+.instructions, .test-info {
+    color: #90caf9; /* Lighter blue */
+    text-align: center;
+    margin-bottom: 25px;
+    font-size: 1.1rem;
+    padding: 10px;
+    background-color: #1e277e;
+    border-radius: 8px;
+}
+
+.test-info {
+    margin-bottom: 20px;
+    font-size: 1rem;
+}
+
+/* Test Grid - Test Viewer */
+.test-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.test-button {
+    background-color: #2962ff; /* Bright blue */
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 20px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-align: center;
+}
+
+.test-button:hover {
+    background-color: #0039cb;
+    transform: scale(1.03);
+    box-shadow: 0 0 15px rgba(41, 98, 255, 0.3);
+}
+
+/* Bacteria Grid - Test Viewer */
+.bacteria-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.bacteria-button {
+    background-color: #1e277e;
+    color: white;
+    border: 2px solid #2962ff;
+    border-radius: 10px;
+    padding: 15px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-align: center;
+}
+
+.bacteria-button:hover {
+    background-color: #2962ff;
+    transform: scale(1.03);
+    box-shadow: 0 0 10px rgba(41, 98, 255, 0.3);
+}
+
+/* Bacteria Grid - Elimination Tool */
+.elimination-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.bacteria-card {
+    background-color: #1e277e;
+    border-radius: 10px;
+    padding: 15px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s;
+    border: 2px solid #2962ff;
+}
+
+.bacteria-card:hover {
+    transform: scale(1.03);
+    box-shadow: 0 0 15px rgba(41, 98, 255, 0.3);
+}
+
+.bacteria-card.eliminated {
+    opacity: 0.4;
+    background-color: #0d1137;
+    border-color: #616161;
+    text-decoration: line-through;
+    color: #90caf9;
+}
+
+.bacteria-name {
+    font-size: 1.1rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #bbdefb;
+}
+
+/* Image Container */
+.image-container {
+    background-color: #1e277e;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    text-align: center;
+    border: 2px solid #2962ff;
+}
+
+.image-container img {
+    max-width: 100%;
+    max-height: 500px;
+    border-radius: 8px;
+    object-fit: contain;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+/* Navigation Controls */
+.navigation-controls {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.back-button {
+    background-color: #1e277e;
+    border: 2px solid #2962ff;
+}
+
+.back-button:hover {
+    background-color: #2962ff;
+}
+
+.footer {
+    text-align: center;
+    margin-top: 30px;
+    padding: 15px;
+    background-color: #0d1137;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    color: #90caf9;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .test-grid, .bacteria-grid, .elimination-grid {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    }
+
+    .navigation {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .nav-button {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .test-grid, .bacteria-grid, .elimination-grid {
+        grid-template-columns: 1fr;
+    }
+
+    h1 {
+        font-size: 1.6rem;
+    }
+
+    .instructions, .test-info {
+        font-size: 1rem;
+    }
+}

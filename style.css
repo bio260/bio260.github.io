@@ -1,175 +1,89 @@
-/* Dark mode blue theme */
 body {
     font-family: Arial, sans-serif;
-    background-color: #1a1a2e;
-    color: #ffffff;
+    background-color: #1e3a8a;
+    color: white;
     margin: 0;
     padding: 0;
     display: flex;
-    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     min-height: 100vh;
 }
 
-#app {
-    flex: 1;
-    padding: 20px;
-    max-width: 800px;
-    margin: 0 auto;
-}
-
 .screen {
-    display: none;
-}
-
-.screen.active {
-    display: block;
-}
-
-.screen h1 {
     text-align: center;
-    color: #00d4ff;
+    max-width: 800px;
+    width: 90%;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+h1 {
+    font-size: 2em;
+    margin-bottom: 20px;
 }
 
 button {
-    background-color: #007bff;
-    color: #ffffff;
+    background-color: #3b82f6;
+    color: white;
     border: none;
-    padding: 10px 20px;
+    padding: 15px 30px;
+    font-size: 1.2em;
     margin: 10px;
     cursor: pointer;
     border-radius: 5px;
-    font-size: 16px;
+    transition: background-color 0.3s;
 }
 
 button:hover {
-    background-color: #0056b3;
+    background-color: #2563eb;
 }
 
-.next-btn {
-    display: block;
-    margin: 20px auto;
+.next {
+    background-color: #10b981;
 }
 
-.hidden {
-    display: none !important;
+.next:hover {
+    background-color: #059669;
 }
 
 .result {
-    text-align: center;
-    margin: 20px 0;
+    margin-top: 20px;
 }
 
 .result img {
     max-width: 100%;
     height: auto;
-    margin: 10px 0;
-    border: 1px solid #007bff;
+    margin-top: 10px;
 }
 
-.test-buttons {
+.biochem-buttons {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
 }
 
-.biochem-btn {
+.biochem-buttons button {
+    flex: 1 1 150px;
     margin: 5px;
 }
 
 #biochemResults {
-    margin: 20px 0;
-}
-
-#biochemResults div {
-    margin: 10px 0;
-}
-
-select {
-    display: block;
-    margin: 20px auto;
-    padding: 10px;
-    font-size: 16px;
-}
-
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 1;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0, 0, 0, 0.8);
-}
-
-.modal-content {
-    background-color: #1a1a2e;
-    margin: 15% auto;
-    padding: 20px;
-    border: 1px solid #007bff;
-    width: 80%;
-    max-width: 600px;
-    text-align: center;
-}
-
-.modal-content img {
-    max-width: 100%;
-    height: auto;
-}
-
-.close, .close-gallery {
-    color: #ffffff;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-.close:hover, .close-gallery:hover {
-    color: #00d4ff;
-}
-
-#imageGrid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    gap: 10px;
     margin-top: 20px;
 }
 
-#imageGrid img {
-    width: 100%;
-    height: auto;
-    cursor: pointer;
-    border: 1px solid #007bff;
-}
-
-.modal-buttons {
-    text-align: center;
-    margin: 20px 0;
-}
-
 footer {
-    text-align: center;
-    padding: 10px;
-    background-color: #0f0f1a;
-    color: #cccccc;
-    font-size: 14px;
+    margin-top: 40px;
+    font-size: 0.8em;
+    color: #cbd5e1;
 }
 
-/* Responsive */
 @media (max-width: 600px) {
-    #app {
-        padding: 10px;
+    h1 {
+        font-size: 1.5em;
     }
-
-    .test-buttons {
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .modal-content {
-        width: 95%;
-        margin: 20% auto;
+    button {
+        padding: 12px 20px;
+        font-size: 1em;
     }
 }

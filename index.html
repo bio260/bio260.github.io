@@ -3,90 +3,66 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BIO 260 Unknown Bacteria Identification App</title>
+    <title>Bacteria Identification App</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="app">
-        <div id="screen1" class="screen active">
-            <h1>Gram Stain</h1>
-            <button id="runGramStain">Run Gram Stain</button>
-            <div id="gramResult" class="result hidden">
-                <p id="gramText"></p>
-                <img id="gramImage" alt="Gram Stain Image">
-            </div>
-            <button id="next1" class="next-btn hidden">Next</button>
+    <div id="screen1" class="screen">
+        <h1>Gram Stain Test</h1>
+        <button id="gramButton">Run Gram Stain</button>
+        <div id="gramResult" class="result" style="display: none;">
+            <p id="gramText"></p>
+            <img id="gramImage" alt="Gram Stain Image">
         </div>
-
-        <div id="screen2" class="screen hidden">
-            <h1>TSA</h1>
-            <div class="result">
-                <p id="tsaText"></p>
-                <img id="tsaImage" alt="TSA Image">
-            </div>
-            <button id="next2" class="next-btn">Next</button>
-        </div>
-
-        <div id="screen3" class="screen hidden">
-            <h1>Selective Media</h1>
-            <button id="macConkeyBtn">MacConkey</button>
-            <button id="msaBtn">MSA</button>
-            <div id="selectiveResult" class="result hidden">
-                <p id="selectiveText"></p>
-                <img id="selectiveImage" alt="Selective Media Image">
-            </div>
-            <button id="next3" class="next-btn hidden">Next</button>
-        </div>
-
-        <div id="screen4" class="screen hidden">
-            <h1>Biochemical Tests</h1>
-            <div class="test-buttons">
-                <button class="biochem-btn" data-test="MR">MR</button>
-                <button class="biochem-btn" data-test="VP">VP</button>
-                <button class="biochem-btn" data-test="Indole">Indole</button>
-                <button class="biochem-btn" data-test="Citrate">Citrate</button>
-                <button class="biochem-btn" data-test="Urea">Urea</button>
-                <button class="biochem-btn" data-test="TSI_Gas">TSI Gas</button>
-                <button class="biochem-btn" data-test="TSI_H2S">TSI H₂S</button>
-            </div>
-            <div id="biochemResults"></div>
-            <button id="idOrganism" class="next-btn">ID the Organism</button>
-        </div>
-
-        <div id="screen5" class="screen hidden">
-            <h1>Final Identification</h1>
-            <select id="organismDropdown"></select>
-            <button id="submitID">Submit</button>
-            <div id="finalResult" class="result hidden">
-                <p id="idText"></p>
-                <div id="profile"></div>
-            </div>
-        </div>
-
-        <div id="modal" class="modal hidden">
-            <div class="modal-content">
-                <span class="close">&times;</span>
-                <img id="modalImage" alt="Modal Image">
-            </div>
-        </div>
-
-        <div id="galleryModal" class="modal hidden">
-            <div class="modal-content">
-                <span class="close-gallery">&times;</span>
-                <h2>Image Reference Gallery</h2>
-                <div id="imageGrid"></div>
-            </div>
-        </div>
-
-        <div class="modal-buttons">
-            <button id="flowchartBtn">View Flowchart</button>
-            <button id="galleryBtn">View Image Gallery</button>
-        </div>
+        <button id="next1" class="next" style="display: none;">Next</button>
+        <footer>Created by Sanchit</footer>
     </div>
 
-    <footer>
-        Created by Sanchit
-    </footer>
+    <div id="screen2" class="screen" style="display: none;">
+        <h1>TSA Test</h1>
+        <div class="result">
+            <p id="tsaText"></p>
+            <img id="tsaImage" alt="TSA Image">
+        </div>
+        <button id="next2" class="next">Next</button>
+        <footer>Created by Sanchit</footer>
+    </div>
+
+    <div id="screen3" class="screen" style="display: none;">
+        <h1>Selective Media Test</h1>
+        <button id="macButton">MacConkey</button>
+        <button id="msaButton">MSA</button>
+        <div id="selectiveResult" class="result" style="display: none;">
+            <p id="selectiveText"></p>
+            <img id="selectiveImage" alt="Selective Media Image">
+        </div>
+        <button id="next3" class="next" style="display: none;">Next</button>
+        <footer>Created by Sanchit</footer>
+    </div>
+
+    <div id="screen4" class="screen" style="display: none;">
+        <h1>Biochemical Tests</h1>
+        <div class="biochem-buttons">
+            <button id="mrButton">MR</button>
+            <button id="vpButton">VP</button>
+            <button id="indoleButton">Indole</button>
+            <button id="citrateButton">Citrate</button>
+            <button id="ureaButton">Urea</button>
+            <button id="tsiGasButton">TSI Gas</button>
+            <button id="tsiH2sButton">TSI H₂S</button>
+        </div>
+        <div id="biochemResults"></div>
+        <button id="idButton" class="next" style="display: none;">ID the organism</button>
+        <footer>Created by Sanchit</footer>
+    </div>
+
+    <div id="screen5" class="screen" style="display: none;">
+        <h1>Final Guess</h1>
+        <select id="organismSelect"></select>
+        <button id="submitButton">Submit</button>
+        <div id="finalResult" class="result" style="display: none;"></div>
+        <footer>Created by Sanchit</footer>
+    </div>
 
     <script src="script.js"></script>
 </body>

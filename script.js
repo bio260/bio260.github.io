@@ -128,11 +128,36 @@ document.addEventListener('DOMContentLoaded', function() {
         // Set up event listeners
         setupEventListeners();
 
+        // Load saved elimination state from localStorage
+        loadEliminationState();
+
         // Set initial active button
         testViewerBtn.classList.add('active');
 
         // Show initial page
         showTestViewerPage('test-menu');
+    }
+
+    // Load elimination state from localStorage
+    function loadEliminationState() {
+        const savedState = localStorage.getItem('bacteriaEliminationState');
+        if (savedState) {
+            const parsedState = JSON.parse(savedState);
+            Object.keys(parsedState).forEach(bacteriaName => {
+                if (parsedState[bacteriaName]) {
+                    eliminatedState[bacteriaName] = true;
+                    const card = document.querySelector(`.bacteria-card[data-bacteria="${bacteriaName}"]`);
+                    if (card) {
+                        card.classList.add('eliminated');
+                    }
+                }
+            });
+        }
+    }
+
+    // Save elimination state to localStorage
+    function saveEliminationState() {
+        localStorage.setItem('bacteriaEliminationState', JSON.stringify(eliminatedState));
     }
 
     // Generate test buttons for the home page
@@ -153,23 +178,37 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Generate bacteria buttons for a specific test
+    // Generate bacteria image thumbnails for a specific test
     function generateBacteriaButtons(testName) {
         testBacteriaGrid.innerHTML = '';
 
         const testData = testDatabase[testName];
         testData.bacteria.forEach(bacterium => {
-            const button = document.createElement('button');
-            button.className = 'bacteria-button';
-            button.textContent = bacterium.name;
-            button.dataset.bacterium = bacterium.name;
-            button.dataset.image = bacterium.image;
+            const container = document.createElement('div');
+            container.className = 'bacteria-image-container';
 
-            button.addEventListener('click', function() {
+            const img = document.createElement('img');
+            img.className = 'bacteria-thumbnail';
+            img.src = bacterium.image;
+            img.alt = bacterium.name;
+            img.dataset.bacterium = bacterium.name;
+            img.dataset.image = bacterium.image;
+            img.dataset.test = testName;
+
+            // Add hover tooltip
+            const tooltip = document.createElement('div');
+            tooltip.className = 'bacteria-tooltip';
+            tooltip.textContent = bacterium.name;
+
+            container.appendChild(img);
+            container.appendChild(tooltip);
+
+            // Add click event to show full image
+            container.addEventListener('click', function() {
                 showImagePage(testName, bacterium.name, bacterium.image);
             });
 
-            testBacteriaGrid.appendChild(button);
+            testBacteriaGrid.appendChild(container);
         });
     }
 
@@ -209,6 +248,9 @@ document.addEventListener('DOMContentLoaded', function() {
             card.classList.add('eliminated');
             eliminatedState[bacteriaName] = true;
         }
+
+        // Save state to localStorage
+        saveEliminationState();
     }
 
     // Show bacteria menu for a specific test
@@ -216,9 +258,9 @@ document.addEventListener('DOMContentLoaded', function() {
         currentTest = testName;
         const testData = testDatabase[testName];
 
-        // Update page title and description
+        // Update page title (description removed as requested)
         testTitle.textContent = testName;
-        testDescription.textContent = testData.description;
+        testDescription.textContent = ''; // Clear description
 
         // Generate bacteria buttons
         generateBacteriaButtons(testName);

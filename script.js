@@ -90,8 +90,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Initialize the app
     function init() {
-        // Select random bacterium
-        selectRandomBacterium();
+        // Select next bacterium in sequence
+        selectNextBacterium();
 
         // Set up event listeners
         setupEventListeners();
@@ -100,8 +100,8 @@ document.addEventListener('DOMContentLoaded', function() {
         populateBacteriaDropdown();
     }
 
-    // Select a random bacterium that has both Gram Stain and TSA images
-    function selectRandomBacterium() {
+    // Select the next bacterium in sequence that has both Gram Stain and TSA images
+    function selectNextBacterium() {
         // First, find all bacteria that have both required Step 1 images
         const validBacteria = allBacteria.filter(bacteria => {
             const gramStainFound = findBacteriumImages(bacteria, 'gramStain').length > 0;
@@ -114,9 +114,18 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        // Select random bacterium
-        const randomIndex = Math.floor(Math.random() * validBacteria.length);
-        state.selectedBacterium = validBacteria[randomIndex];
+        // Sort valid bacteria alphabetically for consistent ordering
+        validBacteria.sort();
+
+        // Get current index from localStorage, default to 0
+        let currentIndex = parseInt(localStorage.getItem('currentBacteriaIndex') || '0', 10);
+
+        // Select bacterium at current index
+        state.selectedBacterium = validBacteria[currentIndex % validBacteria.length];
+
+        // Increment index for next time
+        currentIndex = (currentIndex + 1) % validBacteria.length;
+        localStorage.setItem('currentBacteriaIndex', currentIndex.toString());
 
         console.log('Selected bacterium:', state.selectedBacterium);
 
@@ -175,26 +184,28 @@ document.addEventListener('DOMContentLoaded', function() {
             'pseudomonas on MacConkey.jpg'
         ];
 
-        // Normalize bacterium name for matching
-        const normalizedBacterium = bacteriumName.toLowerCase().replace(/\s+/g, '');
-
         for (const image of allImages) {
             const lowerImage = image.toLowerCase();
 
-            // Check if image contains bacterium name
-            let containsBacterium = false;
+            // Normalize both names for matching (remove all non-letter characters)
+            const normalizedImage = lowerImage.replace(/[^a-z]/g, '');
+            const normalizedBacterium = bacteriumName.toLowerCase().replace(/[^a-z]/g, '');
 
-            // Handle special cases and variations
-            if (normalizedBacterium.includes('e.coli') && lowerImage.includes('e.coli')) {
-                containsBacterium = true;
-            } else if (normalizedBacterium.includes('enterococcusfaecalis') && lowerImage.includes('enterococcus')) {
-                containsBacterium = true;
-            } else if (normalizedBacterium.includes('staphylococcus') && lowerImage.includes('staphylococcus')) {
-                containsBacterium = true;
-            } else if (normalizedBacterium.includes('streptococcus') && lowerImage.includes('streptococcus')) {
-                containsBacterium = true;
-            } else if (lowerImage.includes(normalizedBacterium.replace(/[^a-z]/g, ''))) {
-                containsBacterium = true;
+            let containsBacterium = normalizedImage.includes(normalizedBacterium);
+
+            // Special handling for gram staining "any species" images
+            if (!containsBacterium && category === 'gramStain') {
+                const gramNegativeBacteria = ['alcaligenesfaecalis', 'citrobacterfreundii', 'ecoli', 'enterobacteraerogenes', 'klebsiellapneumoniae', 'proteusmirabilis', 'pseudomonasaeruginosa', 'salmonellatyphimurium', 'serratiamarcescens', 'shigellaflexneri'];
+
+                if (normalizedImage.includes('gramnegativebacilliany speciesgramstaining') && gramNegativeBacteria.includes(normalizedBacterium)) {
+                    containsBacterium = true;
+                } else if (normalizedImage.includes('grampositivebacillusallspeciesgramstaining') && ['bacilluscereus', 'bacillussubtilis'].includes(normalizedBacterium)) {
+                    containsBacterium = true;
+                } else if (normalizedImage.includes('staphylococciallspeciesgramstaining') && normalizedBacterium.includes('staphylococcus')) {
+                    containsBacterium = true;
+                } else if (normalizedImage.includes('streptococcusallspeciesgramstaining') && normalizedBacterium.includes('streptococcus')) {
+                    containsBacterium = true;
+                }
             }
 
             // Check if image matches the category

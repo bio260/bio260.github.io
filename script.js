@@ -44,12 +44,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Elimination Section
         eliminationSection: document.getElementById('elimination-section'),
         eliminationGrid: document.getElementById('elimination-grid'),
-        proceedToGuessBtn: document.getElementById('proceed-to-guess'),
-
-        // Final Guess
-        finalGuess: document.getElementById('final-guess'),
-        bacteriaSelect: document.getElementById('bacteria-select'),
-        submitGuess: document.getElementById('submit-guess'),
+        submitFinalGuessBtn: document.getElementById('submit-final-guess'),
         result: document.getElementById('result'),
         resultTitle: document.getElementById('result-title'),
         actualBacterium: document.getElementById('actual-bacterium'),
@@ -95,12 +90,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Set up event listeners
         setupEventListeners();
-
-        // Populate bacteria dropdown
-        populateBacteriaDropdown();
     }
 
-    // Select the next bacterium in sequence that has both Gram Stain and TSA images
+    // Select a random bacterium that has both Gram Stain and TSA images
     function selectNextBacterium() {
         // First, find all bacteria that have both required Step 1 images
         const validBacteria = allBacteria.filter(bacteria => {
@@ -114,18 +106,9 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        // Sort valid bacteria alphabetically for consistent ordering
-        validBacteria.sort();
-
-        // Get current index from localStorage, default to 0
-        let currentIndex = parseInt(localStorage.getItem('currentBacteriaIndex') || '0', 10);
-
-        // Select bacterium at current index
-        state.selectedBacterium = validBacteria[currentIndex % validBacteria.length];
-
-        // Increment index for next time
-        currentIndex = (currentIndex + 1) % validBacteria.length;
-        localStorage.setItem('currentBacteriaIndex', currentIndex.toString());
+        // Select a random bacterium from the valid bacteria list
+        const randomIndex = Math.floor(Math.random() * validBacteria.length);
+        state.selectedBacterium = validBacteria[randomIndex];
 
         console.log('Selected bacterium:', state.selectedBacterium);
 
@@ -359,11 +342,8 @@ document.addEventListener('DOMContentLoaded', function() {
         elements.gramStainBtn.addEventListener('click', () => showTestResult('step1', 'gramStain'));
         elements.tsaBtn.addEventListener('click', () => showTestResult('step1', 'tsa'));
 
-        // Proceed to guess button
-        elements.proceedToGuessBtn.addEventListener('click', unlockFinalGuess);
-
-        // Submit guess button
-        elements.submitGuess.addEventListener('click', handleGuessSubmission);
+        // Submit final guess button
+        elements.submitFinalGuessBtn.addEventListener('click', handleFinalGuessSubmission);
     }
 
     // Show test result and mark as viewed
@@ -413,13 +393,19 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Unlock Step 2 when Step 1 is complete
     function unlockStep2() {
-        elements.step2.style.display = 'block';
+        // Check if there are any tests available for Step 2
+        if (state.availableTests.step2.length > 0) {
+            elements.step2.style.display = 'block';
 
-        // Generate Step 2 buttons
-        generateStepButtons('step2', elements.step2Buttons);
+            // Generate Step 2 buttons
+            generateStepButtons('step2', elements.step2Buttons);
 
-        // Check if all Step 2 tests are viewed
-        checkStepCompletion('step2');
+            // Check if all Step 2 tests are viewed
+            checkStepCompletion('step2');
+        } else {
+            // No Step 2 tests available, skip to Step 3
+            unlockStep3();
+        }
     }
 
     // Unlock Step 3 when Step 2 is complete
@@ -434,8 +420,8 @@ document.addEventListener('DOMContentLoaded', function() {
             // Check if all Step 3 tests are viewed
             checkStepCompletion('step3');
         } else {
-            // No additional tests, go directly to final guess
-            unlockFinalGuess();
+            // No additional tests, go directly to elimination grid
+            unlockEliminationGrid();
         }
     }
 
@@ -446,12 +432,7 @@ document.addEventListener('DOMContentLoaded', function() {
         state.eliminationUnlocked = true;
     }
 
-    // Unlock Final Guess when Step 3 is complete
-    function unlockFinalGuess() {
-        elements.finalGuess.style.display = 'block';
-        // Update dropdown to show only remaining bacteria
-        populateBacteriaDropdown();
-    }
+
 
     // Generate buttons for a step
     function generateStepButtons(step, container) {
@@ -543,31 +524,28 @@ document.addEventListener('DOMContentLoaded', function() {
             state.eliminatedBacteria[bacteriaName] = true;
         }
 
+        // Check how many bacteria remain and show/hide submit button
+        const remainingCount = allBacteria.length - Object.keys(state.eliminatedBacteria).length;
+        if (remainingCount === 1) {
+            elements.submitFinalGuessBtn.style.display = 'block';
+        } else {
+            elements.submitFinalGuessBtn.style.display = 'none';
+        }
+
         console.log('Eliminated bacteria:', state.eliminatedBacteria);
+        console.log('Remaining bacteria count:', remainingCount);
     }
 
-    // Populate bacteria dropdown (only show non-eliminated bacteria)
-    function populateBacteriaDropdown() {
-        elements.bacteriaSelect.innerHTML = '';
 
-        allBacteria.forEach(bacteria => {
-            // Only include bacteria that haven't been eliminated
-            if (!state.eliminatedBacteria[bacteria]) {
-                const option = document.createElement('option');
-                option.value = bacteria;
-                option.textContent = bacteria;
-                elements.bacteriaSelect.appendChild(option);
-            }
-        });
-    }
 
-    // Handle guess submission
-    function handleGuessSubmission() {
-        const guessedBacterium = elements.bacteriaSelect.value;
-        const isCorrect = guessedBacterium === state.selectedBacterium;
+    // Handle final guess submission
+    function handleFinalGuessSubmission() {
+        // Find the remaining bacterium (the one not eliminated)
+        const remainingBacterium = allBacteria.find(bacteria => !state.eliminatedBacteria[bacteria]);
+        const isCorrect = remainingBacterium === state.selectedBacterium;
 
         // Show result
-        elements.resultTitle.textContent = isCorrect ? '🎉 CORRECT!' : '❌ INCORRECT';
+        elements.resultTitle.textContent = isCorrect ? 'CORRECT!' : 'INCORRECT';
         elements.resultTitle.style.color = isCorrect ? '#4caf50' : '#f44336';
         elements.actualBacterium.textContent = `The actual bacterium was: ${state.selectedBacterium}`;
 
@@ -575,7 +553,8 @@ document.addEventListener('DOMContentLoaded', function() {
         showAllTestResults();
 
         elements.result.style.display = 'block';
-        elements.submitGuess.disabled = true;
+        elements.submitFinalGuessBtn.disabled = true;
+        elements.submitFinalGuessBtn.style.display = 'none';
     }
 
     // Show all test results in the final screen

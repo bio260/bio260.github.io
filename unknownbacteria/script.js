@@ -279,10 +279,10 @@ document.addEventListener('DOMContentLoaded', function() {
         // Step 3: Additional tests (images that don't fit main categories)
         const otherImages = findBacteriumImages(state.selectedBacterium, 'other');
         if (otherImages.length > 0) {
-            state.availableTests.step3 = otherImages.map(image => ({
+            state.availableTests.step3 = otherImages.map((image, index) => ({
                 type: 'other',
                 images: [image],
-                displayName: 'Additional: ' + image.split('/').pop().replace(/\.[^/.]+$/, "")
+                displayName: 'Additional Test ' + (index + 1)
             }));
         }
 
@@ -319,13 +319,13 @@ document.addEventListener('DOMContentLoaded', function() {
             if (testType === 'gramStain') {
                 const image = testData.images[0];
                 elements.gramStainImage.innerHTML = `
-                    <img src="${image}" alt="Gram Stain - ${state.selectedBacterium}">
+                    <img src="${image}" alt="Gram Stain Result">
                     <h3>Gram Stain Result</h3>
                 `;
             } else if (testType === 'tsa') {
                 const image = testData.images[0];
                 elements.tsaImage.innerHTML = `
-                    <img src="${image}" alt="TSA Plate - ${state.selectedBacterium}">
+                    <img src="${image}" alt="TSA Plate Result">
                     <h3>TSA Plate Result</h3>
                 `;
             }
@@ -400,15 +400,20 @@ document.addEventListener('DOMContentLoaded', function() {
             button.addEventListener('click', () => {
                 showTestResult(step, test.type);
 
-                // For Step 2/3, show image in the step's image container
+                // For Step 2/3, show images in the step's image container
                 if (step !== 'step1') {
                     const imageContainer = step === 'step2' ? elements.step2Images : elements.step3Images;
-                    imageContainer.innerHTML = `
-                        <div class="test-image">
-                            <img src="${test.images[0]}" alt="${test.displayName} - ${state.selectedBacterium}">
+
+                    test.images.forEach(image => {
+                        const imageDiv = document.createElement('div');
+                        imageDiv.className = 'test-image';
+                        imageDiv.innerHTML = `
+                            <img src="${image}" alt="${test.displayName} Result">
                             <h3>${test.displayName} Result</h3>
-                        </div>
-                    `;
+                        `;
+                        imageContainer.appendChild(imageDiv);
+                    });
+
                     imageContainer.style.display = 'block';
                 }
 
@@ -525,11 +530,16 @@ document.addEventListener('DOMContentLoaded', function() {
             const card = document.createElement('div');
             card.className = 'test-result-card';
 
-            const image = test.images[0];
-            card.innerHTML = `
-                <h4>${test.displayName}</h4>
-                <img src="${image}" alt="${test.displayName} - ${state.selectedBacterium}">
-            `;
+            const title = document.createElement('h4');
+            title.textContent = test.displayName;
+            card.appendChild(title);
+
+            test.images.forEach(image => {
+                const img = document.createElement('img');
+                img.src = image;
+                img.alt = `${test.displayName} Result`;
+                card.appendChild(img);
+            });
 
             elements.allTests.appendChild(card);
         });

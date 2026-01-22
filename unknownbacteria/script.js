@@ -90,6 +90,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Set up event listeners
         setupEventListeners();
+
+        // Always show elimination grid
+        unlockEliminationGrid();
     }
 
     // Select a random bacterium that has both Gram Stain and TSA images
@@ -307,11 +310,12 @@ document.addEventListener('DOMContentLoaded', function() {
         // Mark as viewed
         state.viewedTests[step][testType] = true;
 
-        // Update button appearance
-        const button = document.querySelector(`.test-button[data-test="${testType}"]`);
-        if (button) {
-            button.classList.add('viewed');
-            button.disabled = true;
+        // Update button appearance only for Step 1
+        if (step === 'step1') {
+            const button = document.querySelector(`.test-button[data-test="${testType}"]`);
+            if (button) {
+                button.disabled = true;
+            }
         }
 
         // Show the image
@@ -418,9 +422,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
 
                 // Mark as viewed and check completion
-                state.viewedTests[step][test.type] = true;
-                button.classList.add('viewed');
-                button.disabled = true;
+                state.viewedTests[step][testType] = true;
+
+                // Update button appearance only for Step 1
+                if (step === 'step1') {
+                    button.classList.add('viewed');
+                    button.disabled = true;
+                }
 
                 checkStepCompletion(step);
             });

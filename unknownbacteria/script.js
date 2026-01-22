@@ -79,7 +79,7 @@ document.addEventListener('DOMContentLoaded', function() {
         tsa: ['on TSA', 'on_TSA'],
         macConkey: ['on MacConkey', 'on_Mac_Conkey', 'MacConkey'],
         msa: ['on MSA'],
-        bloodAgar: ['on Blood agar', 'on blood agar'],
+        bloodAgar: ['on Blood agar', 'on blood agar', 'blood agar'],
         other: [] // Will be populated with remaining tests
     };
 
@@ -276,64 +276,15 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
 
-        // Step 3: Additional tests (any remaining images)
-        const allImages = [
-            ...findBacteriumImages(state.selectedBacterium, 'gramStain'),
-            ...findBacteriumImages(state.selectedBacterium, 'tsa'),
-            ...findBacteriumImages(state.selectedBacterium, 'macConkey'),
-            ...findBacteriumImages(state.selectedBacterium, 'msa'),
-            ...findBacteriumImages(state.selectedBacterium, 'bloodAgar')
-        ];
-
-        // Find additional images that weren't categorized
-        const allFiles = [
-            'Alcaligenes_faecalis_on_TSA.jpg',
-            'Bacillus cereus on TSA.jpg',
-            'Bacillus subtilis on TSA.jpg',
-            'Bacterial Id flow chart.jpg',
-            'Citrobacter freundii on Macconkey.jpg',
-            'Citrobacter_freundii_and_Enterobacter_aerogenes.jpg',
-            'Citrobacter_freundii_on_TSA.jpg',
-            'E.coli and Klebsiella Mac (copyrighted).jpg',
-            'E.coli__or_Citrobacter_freundii_on_MacConkey.jpg',
-            'E.coli_on_TSA.jpg',
-            'Enterobacter_aerogenes_on_TSA.jpg',
-            'Enterococcus faecalis on MSA.png',
-            'Gram negative bacilli any species gram staining.jpg',
-            'Gram positive bacillus all species gram staining.jpg',
-            'Klebsiella pneumoniae MacConkey wikipedia.jpg',
-            'Klebsiella_pneumoniae_on_TSA.jpg',
-            'Micrococcus luteus gram staining.jpg',
-            'Micrococcus luteus on blood agar.jpg',
-            'Micrococcus_luteus_on_TSA.jpg',
-            'Proteus_mirabilis_on_MacConkey.jpg',
-            'Proteus_mirabilis_on_TSA.jpg',
-            'Pseudomonas_aeruginosa_on_TSA.jpg',
-            'Salmonella_typhimurium_on_MacConkey.jpg',
-            'Salmonella_typhimurium_on_TSA.jpg',
-            'Serratia_marcescens_on_MacConkey.jpg',
-            'Serratia_marcescens_on_TSA(1).jpg',
-            'Serratia_marcescens_on_TSA.jpg',
-            'Shigella__flexneri_on_TSA.jpg',
-            'Shigella_flexneri_on_Mac_Conkey.jpg',
-            'Shigella_flexneri_on_TSA.jpg',
-            'Staphylococci all species gram staining.jpg',
-            'Staphylococcus aureus on Blood agar.jpg',
-            'Staphylococcus aureus on MSA.jpg',
-            'Staphylococcus epidermidis on Blood agar.jpg',
-            'Staphylococcus epidermidis on TSA.jpg',
-            'Staphylococcus_aureus_on_TSA.jpg',
-            'Streptococcus all species gram staining.jpg',
-            'Streptococcus bovis on TSa.jpg',
-            'Streptococcus pyogenes on TSA.jpg',
-            'Streptococcus pyogenes on blood agar.jpg',
-            'enterococcus faecalis on blood agar.jpg',
-            'pseudomonas on MacConkey.jpg'
-        ];
-
-        // This is a simplified approach - in a real app, we'd have a more sophisticated
-        // way to detect additional test images for specific bacteria
-        // For now, we'll just use the categorized images
+        // Step 3: Additional tests (images that don't fit main categories)
+        const otherImages = findBacteriumImages(state.selectedBacterium, 'other');
+        if (otherImages.length > 0) {
+            state.availableTests.step3 = otherImages.map(image => ({
+                type: 'other',
+                images: [image],
+                displayName: 'Additional: ' + image.split('/').pop().replace(/\.[^/.]+$/, "")
+            }));
+        }
 
         console.log('Available tests discovered:', state.availableTests);
     }

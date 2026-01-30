@@ -181,20 +181,21 @@ document.addEventListener('DOMContentLoaded', function() {
 
             let containsBacterium = normalizedImage.includes(normalizedBacterium);
 
-            // Special handling for gram staining "any species" images
-            if (!containsBacterium && category === 'gramStain') {
-                const gramNegativeBacteria = ['alcaligenesfaecalis', 'citrobacterfreundii', 'ecoli', 'enterobacteraerogenes', 'klebsiellapneumoniae', 'proteusmirabilis', 'pseudomonasaeruginosa', 'salmonellatyphimurium', 'serratiamarcescens', 'shigellaflexneri'];
+                // Special handling for gram staining "any species" images
+                if (!containsBacterium && category === 'gramStain') {
+                    const gramNegativeBacteria = ['alcaligenesfaecalis', 'citrobacterfreundii', 'ecoli', 'enterobacteraerogenes', 'klebsiellapneumoniae', 'proteusmirabilis', 'pseudomonasaeruginosa', 'salmonellatyphimurium', 'serratiamarcescens', 'shigellaflexneri'];
 
-                if (normalizedImage.includes('gramnegativebacilliany speciesgramstaining') && gramNegativeBacteria.includes(normalizedBacterium)) {
-                    containsBacterium = true;
-                } else if (normalizedImage.includes('grampositivebacillusallspeciesgramstaining') && ['bacilluscereus', 'bacillussubtilis'].includes(normalizedBacterium)) {
-                    containsBacterium = true;
-                } else if (normalizedImage.includes('staphylococciallspeciesgramstaining') && normalizedBacterium.includes('staphylococcus')) {
-                    containsBacterium = true;
-                } else if (normalizedImage.includes('streptococcusallspeciesgramstaining') && normalizedBacterium.includes('streptococcus')) {
-                    containsBacterium = true;
+                    // Fix: Correct the string matching for normalized filenames (no spaces)
+                    if (normalizedImage.includes('gramnegativebacillianyspeciesgramstaining') && gramNegativeBacteria.includes(normalizedBacterium)) {
+                        containsBacterium = true;
+                    } else if (normalizedImage.includes('grampositivebacillusallspeciesgramstaining') && ['bacilluscereus', 'bacillussubtilis'].includes(normalizedBacterium)) {
+                        containsBacterium = true;
+                    } else if (normalizedImage.includes('staphylococciallspeciesgramstaining') && normalizedBacterium.includes('staphylococcus')) {
+                        containsBacterium = true;
+                    } else if (normalizedImage.includes('streptococcusallspeciesgramstaining') && normalizedBacterium.includes('streptococcus')) {
+                        containsBacterium = true;
+                    }
                 }
-            }
 
             // Check if image matches the category
             if (containsBacterium) {

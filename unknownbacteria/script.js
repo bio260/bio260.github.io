@@ -89,22 +89,59 @@ document.addEventListener('DOMContentLoaded', function() {
     function getDescriptiveTestName(imageName) {
         const lowerName = imageName.toLowerCase();
         
-        // Common test patterns to look for
+        // Enhanced test patterns to look for with more specific descriptions
         const testPatterns = [
-            { pattern: /flow chart/, name: 'Flow Chart' },
-            { pattern: /gram staining/, name: 'Gram Staining' },
-            { pattern: /gram stain/, name: 'Gram Staining' },
+            // Flow charts and identification guides
+            { pattern: /flow chart/, name: 'Bacterial Identification Flow Chart' },
+            { pattern: /id flow/, name: 'Bacterial Identification Flow Chart' },
+            
+            // Gram staining patterns
+            { pattern: /gram staining/, name: 'Gram Staining (Any Species)' },
+            { pattern: /gram stain/, name: 'Gram Staining (Any Species)' },
+            { pattern: /gram negative/, name: 'Gram Negative Bacilli Staining' },
+            { pattern: /gram positive/, name: 'Gram Positive Bacilli Staining' },
+            
+            // Specific bacterial group staining
+            { pattern: /staphylococci/, name: 'Staphylococci Gram Staining' },
+            { pattern: /streptococcus/, name: 'Streptococcus Gram Staining' },
+            { pattern: /bacillus/, name: 'Bacillus Gram Staining' },
+            { pattern: /micrococcus/, name: 'Micrococcus Gram Staining' },
+            
+            // Agar plate types
             { pattern: /on tsa/, name: 'TSA Plate' },
-            { pattern: /on macconkey/, name: 'MacConkey Agar' },
+            { pattern: /on macconkey/, name: 'MacConkey Agar Plate' },
             { pattern: /on msa/, name: 'MSA Plate' },
-            { pattern: /on blood agar/, name: 'Blood Agar' },
-            { pattern: /blood agar/, name: 'Blood Agar' },
-            { pattern: /gram negative/, name: 'Gram Negative Test' },
-            { pattern: /gram positive/, name: 'Gram Positive Test' },
-            { pattern: /staphylococci/, name: 'Staphylococci Test' },
-            { pattern: /streptococcus/, name: 'Streptococcus Test' },
-            { pattern: /bacillus/, name: 'Bacillus Test' },
-            { pattern: /micrococcus/, name: 'Micrococcus Test' }
+            { pattern: /on blood agar/, name: 'Blood Agar Plate' },
+            { pattern: /on blood/, name: 'Blood Agar Plate' },
+            { pattern: /blood agar/, name: 'Blood Agar Plate' },
+            
+            // Comparison images
+            { pattern: /and.*enterobacter/, name: 'Citrobacter vs Enterobacter Comparison' },
+            { pattern: /and.*klebsiella/, name: 'E. coli vs Klebsiella Comparison' },
+            { pattern: /or.*citrobacter/, name: 'E. coli or Citrobacter Comparison' },
+            
+            // Specific bacterial images (generic descriptions without bacterial names)
+            { pattern: /alcaligenes/, name: 'Gram Negative Bacilli TSA Plate' },
+            { pattern: /bacillus cereus/, name: 'Gram Positive Bacilli Blood Agar Plate' },
+            { pattern: /bacillus subtilis/, name: 'Gram Positive Bacilli Blood Agar Plate' },
+            { pattern: /citrobacter/, name: 'Gram Negative Bacilli MacConkey Plate' },
+            { pattern: /enterobacter/, name: 'Gram Negative Bacilli TSA Plate' },
+            { pattern: /enterococcus/, name: 'Gram Positive Cocci Blood Agar Plate' },
+            { pattern: /klebsiella/, name: 'Gram Negative Bacilli MacConkey Plate' },
+            { pattern: /micrococcus/, name: 'Gram Positive Cocci Gram Staining' },
+            { pattern: /proteus/, name: 'Gram Negative Bacilli MacConkey Plate' },
+            { pattern: /pseudomonas/, name: 'Gram Negative Bacilli TSA Plate' },
+            { pattern: /salmonella/, name: 'Gram Negative Bacilli MacConkey Plate' },
+            { pattern: /serratia/, name: 'Gram Negative Bacilli MacConkey Plate' },
+            { pattern: /shigella/, name: 'Gram Negative Bacilli MacConkey Plate' },
+            { pattern: /staphylococcus aureus/, name: 'Gram Positive Cocci Blood Agar Plate' },
+            { pattern: /staphylococcus epidermidis/, name: 'Gram Positive Cocci Blood Agar Plate' },
+            { pattern: /streptococcus bovis/, name: 'Gram Positive Cocci TSA Plate' },
+            { pattern: /streptococcus pyogenes/, name: 'Gram Positive Cocci Blood Agar Plate' },
+            
+            // Generic test patterns
+            { pattern: /test/, name: 'Additional Test' },
+            { pattern: /result/, name: 'Test Result' }
         ];
 
         // Check for specific patterns
@@ -115,7 +152,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         // If no specific pattern found, try to extract meaningful words
-        const meaningfulWords = ['chart', 'staining', 'plate', 'agar', 'test', 'result'];
+        const meaningfulWords = ['chart', 'staining', 'plate', 'agar', 'test', 'result', 'comparison', 'identification'];
         const words = imageName.split(/[_\s-]/);
         const descriptiveWords = words.filter(word => 
             meaningfulWords.some(meaningful => word.toLowerCase().includes(meaningful))
@@ -125,8 +162,8 @@ document.addEventListener('DOMContentLoaded', function() {
             return descriptiveWords.join(' ').replace(/\b\w/g, l => l.toUpperCase());
         }
 
-        // If still no good name, return null to fall back to generic name
-        return null;
+        // If still no good name, return a generic but descriptive name
+        return 'Additional Test';
     }
 
     // Initialize the app

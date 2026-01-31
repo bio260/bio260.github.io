@@ -19,7 +19,8 @@ document.addEventListener('DOMContentLoaded', function() {
             step3: false
         },
         eliminatedBacteria: {},
-        eliminationUnlocked: false
+        eliminationUnlocked: false,
+        displayedImages: new Set() // Track all displayed images to prevent duplicates
     };
 
     // DOM Elements
@@ -82,6 +83,50 @@ document.addEventListener('DOMContentLoaded', function() {
         bloodAgar: ['on Blood agar', 'on blood agar', 'blood agar'],
         other: [] // Will be populated with remaining tests
     };
+
+    // Get a descriptive name for additional tests based on image filename
+    function getDescriptiveTestName(imageName) {
+        const lowerName = imageName.toLowerCase();
+        
+        // Common test patterns to look for
+        const testPatterns = [
+            { pattern: /flow chart/, name: 'Flow Chart' },
+            { pattern: /gram staining/, name: 'Gram Staining' },
+            { pattern: /gram stain/, name: 'Gram Staining' },
+            { pattern: /on tsa/, name: 'TSA Plate' },
+            { pattern: /on macconkey/, name: 'MacConkey Agar' },
+            { pattern: /on msa/, name: 'MSA Plate' },
+            { pattern: /on blood agar/, name: 'Blood Agar' },
+            { pattern: /blood agar/, name: 'Blood Agar' },
+            { pattern: /gram negative/, name: 'Gram Negative Test' },
+            { pattern: /gram positive/, name: 'Gram Positive Test' },
+            { pattern: /staphylococci/, name: 'Staphylococci Test' },
+            { pattern: /streptococcus/, name: 'Streptococcus Test' },
+            { pattern: /bacillus/, name: 'Bacillus Test' },
+            { pattern: /micrococcus/, name: 'Micrococcus Test' }
+        ];
+
+        // Check for specific patterns
+        for (const pattern of testPatterns) {
+            if (pattern.pattern.test(lowerName)) {
+                return pattern.name;
+            }
+        }
+
+        // If no specific pattern found, try to extract meaningful words
+        const meaningfulWords = ['chart', 'staining', 'plate', 'agar', 'test', 'result'];
+        const words = imageName.split(/[_\s-]/);
+        const descriptiveWords = words.filter(word => 
+            meaningfulWords.some(meaningful => word.toLowerCase().includes(meaningful))
+        );
+
+        if (descriptiveWords.length > 0) {
+            return descriptiveWords.join(' ').replace(/\b\w/g, l => l.toUpperCase());
+        }
+
+        // If still no good name, return null to fall back to generic name
+        return null;
+    }
 
     // Initialize the app
     function init() {
@@ -242,6 +287,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Discover all available tests for the selected bacterium
     function discoverAvailableTests() {
+        // Clear previous test data
+        state.availableTests.step1 = [];
+        state.availableTests.step2 = [];
+        state.availableTests.step3 = [];
+        state.displayedImages.clear();
+
         // Step 1: Gram Stain + TSA (required)
         const gramStainImages = findBacteriumImages(state.selectedBacterium, 'gramStain');
         const tsaImages = findBacteriumImages(state.selectedBacterium, 'tsa');
@@ -252,6 +303,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 images: gramStainImages,
                 displayName: 'Gram Stain'
             });
+            // Add images to displayed set
+            gramStainImages.forEach(img => state.displayedImages.add(img));
         }
 
         if (tsaImages.length > 0) {
@@ -260,6 +313,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 images: tsaImages,
                 displayName: 'TSA Plate'
             });
+            // Add images to displayed set
+            tsaImages.forEach(img => state.displayedImages.add(img));
         }
 
         // Step 2: Selective Media Tests
@@ -271,26 +326,41 @@ document.addEventListener('DOMContentLoaded', function() {
 
         for (const test of selectiveMediaTests) {
             const images = findBacteriumImages(state.selectedBacterium, test.type);
-            if (images.length > 0) {
+            // Filter out images that have already been displayed
+            const newImages = images.filter(img => !state.displayedImages.has(img));
+            
+            if (newImages.length > 0) {
                 state.availableTests.step2.push({
                     type: test.type,
-                    images: images,
+                    images: newImages,
                     displayName: test.displayName
                 });
+                // Add new images to displayed set
+                newImages.forEach(img => state.displayedImages.add(img));
             }
         }
 
         // Step 3: Additional tests (images that don't fit main categories)
         const otherImages = findBacteriumImages(state.selectedBacterium, 'other');
-        if (otherImages.length > 0) {
-            state.availableTests.step3 = otherImages.map((image, index) => ({
-                type: 'other',
-                images: [image],
-                displayName: 'Additional Test ' + (index + 1)
-            }));
+        // Filter out images that have already been displayed
+        const remainingImages = otherImages.filter(img => !state.displayedImages.has(img));
+        
+        if (remainingImages.length > 0) {
+            state.availableTests.step3 = remainingImages.map((image, index) => {
+                // Extract a more descriptive name from the image filename
+                const imageName = image.split('/').pop().replace(/\.(jpg|jpeg|png)$/i, '');
+                const descriptiveName = getDescriptiveTestName(imageName);
+                
+                return {
+                    type: 'other',
+                    images: [image],
+                    displayName: descriptiveName || `Additional Test ${index + 1}`
+                };
+            });
         }
 
         console.log('Available tests discovered:', state.availableTests);
+        console.log('Displayed images:', Array.from(state.displayedImages));
     }
 
     // Set up event listeners
@@ -423,13 +493,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
 
                 // Mark as viewed and check completion
-                state.viewedTests[step][testType] = true;
+                state.viewedTests[step][test.type] = true;
 
-                // Update button appearance only for Step 1
-                if (step === 'step1') {
-                    button.classList.add('viewed');
-                    button.disabled = true;
-                }
+                // Update button appearance
+                button.classList.add('viewed');
+                button.disabled = true;
 
                 checkStepCompletion(step);
             });
@@ -535,6 +603,9 @@ document.addEventListener('DOMContentLoaded', function() {
             ...state.availableTests.step3
         ];
 
+        // Track displayed images in results to prevent duplicates
+        const displayedResultImages = new Set();
+
         allTests.forEach(test => {
             const card = document.createElement('div');
             card.className = 'test-result-card';
@@ -544,13 +615,20 @@ document.addEventListener('DOMContentLoaded', function() {
             card.appendChild(title);
 
             test.images.forEach(image => {
-                const img = document.createElement('img');
-                img.src = image;
-                img.alt = `${test.displayName} Result`;
-                card.appendChild(img);
+                // Only show image if it hasn't been displayed in results yet
+                if (!displayedResultImages.has(image)) {
+                    const img = document.createElement('img');
+                    img.src = image;
+                    img.alt = `${test.displayName} Result`;
+                    card.appendChild(img);
+                    displayedResultImages.add(image);
+                }
             });
 
-            elements.allTests.appendChild(card);
+            // Only add card if it has content (title + at least one image)
+            if (card.children.length > 1) {
+                elements.allTests.appendChild(card);
+            }
         });
     }
 

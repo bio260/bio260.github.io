@@ -46,6 +46,7 @@ document.addEventListener('DOMContentLoaded', function() {
         eliminationSection: document.getElementById('elimination-section'),
         eliminationGrid: document.getElementById('elimination-grid'),
         submitFinalGuessBtn: document.getElementById('submit-final-guess'),
+        tryAnotherBtn: document.getElementById('try-another-btn'),
         result: document.getElementById('result'),
         resultTitle: document.getElementById('result-title'),
         actualBacterium: document.getElementById('actual-bacterium'),
@@ -371,6 +372,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Submit final guess button
         elements.submitFinalGuessBtn.addEventListener('click', handleFinalGuessSubmission);
+        
+        // Try another bacteria button
+        elements.tryAnotherBtn.addEventListener('click', resetGame);
     }
 
     // Show test result and mark as viewed
@@ -590,6 +594,7 @@ document.addEventListener('DOMContentLoaded', function() {
         elements.result.style.display = 'block';
         elements.submitFinalGuessBtn.disabled = true;
         elements.submitFinalGuessBtn.style.display = 'none';
+        elements.tryAnotherBtn.style.display = 'block';
     }
 
     // Show all test results in the final screen
@@ -630,6 +635,60 @@ document.addEventListener('DOMContentLoaded', function() {
                 elements.allTests.appendChild(card);
             }
         });
+    }
+
+    // Reset the game for a new round
+    function resetGame() {
+        // Reset all state
+        state.selectedBacterium = null;
+        state.availableTests = {
+            step1: [],
+            step2: [],
+            step3: []
+        };
+        state.viewedTests = {
+            step1: {},
+            step2: {},
+            step3: {}
+        };
+        state.stepCompletion = {
+            step1: false,
+            step2: false,
+            step3: false
+        };
+        state.eliminatedBacteria = {};
+        state.eliminationUnlocked = false;
+        state.displayedImages.clear();
+
+        // Hide all steps and result
+        elements.step2.style.display = 'none';
+        elements.step3.style.display = 'none';
+        elements.eliminationSection.style.display = 'none';
+        elements.result.style.display = 'none';
+        elements.tryAnotherBtn.style.display = 'none';
+
+        // Reset Step 1 buttons
+        elements.gramStainBtn.disabled = false;
+        elements.tsaBtn.disabled = false;
+        elements.step1Images.style.display = 'none';
+        elements.gramStainImage.innerHTML = '';
+        elements.tsaImage.innerHTML = '';
+
+        // Clear Step 2 and 3 buttons and images
+        elements.step2Buttons.innerHTML = '';
+        elements.step2Images.innerHTML = '';
+        elements.step3Buttons.innerHTML = '';
+        elements.step3Images.innerHTML = '';
+
+        // Clear elimination grid
+        elements.eliminationGrid.innerHTML = '';
+
+        // Clear result content
+        elements.allTests.innerHTML = '';
+
+        // Start a new game
+        selectNextBacterium();
+        unlockEliminationGrid();
     }
 
     // Initialize the app

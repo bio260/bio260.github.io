@@ -53,9 +53,8 @@ document.addEventListener('DOMContentLoaded', function() {
         allTests: document.getElementById('all-tests')
     };
 
-    // All bacteria data - extracted from image filenames
+    // All bacteria data - Updated list (removed Streptococcus bovis and Alcaligenes faecalis)
     const allBacteria = [
-        "Alcaligenes faecalis",
         "Bacillus cereus",
         "Bacillus subtilis",
         "Citrobacter freundii",
@@ -71,9 +70,238 @@ document.addEventListener('DOMContentLoaded', function() {
         "Shigella flexneri",
         "Staphylococcus aureus",
         "Staphylococcus epidermidis",
-        "Streptococcus bovis",
         "Streptococcus pyogenes"
     ];
+
+    // Biochemical test results for all organisms
+    const biochemicalTests = {
+        // Gram Positive Bacilli
+        "Bacillus cereus": {
+            gramStain: "G+",
+            shape: "Bacilli",
+            tsa: "Growth",
+            macConkey: "NF (Growth)",
+            biochemical: {
+                "MR Test": { result: "negative", description: "Methyl Red Test: Negative" },
+                "VP Test": { result: "negative", description: "Voges-Proskauer Test: Negative" },
+                "Citrate Test": { result: "negative", description: "Citrate Utilization: Negative" },
+                "TSI H2S": { result: "negative", description: "TSI H2S Production: Negative" },
+                "Urease Test": { result: "negative", description: "Urease Test: Negative" },
+                "Indole Test": { result: "negative", description: "Indole Test: Negative" }
+            }
+        },
+        "Bacillus subtilis": {
+            gramStain: "G+",
+            shape: "Bacilli",
+            tsa: "Growth",
+            macConkey: "NF (Growth)",
+            biochemical: {
+                "MR Test": { result: "negative", description: "Methyl Red Test: Negative" },
+                "VP Test": { result: "positive", description: "Voges-Proskauer Test: Positive" },
+                "Citrate Test": { result: "positive", description: "Citrate Utilization: Positive" },
+                "TSI H2S": { result: "negative", description: "TSI H2S Production: Negative" },
+                "Urease Test": { result: "negative", description: "Urease Test: Negative" },
+                "Indole Test": { result: "negative", description: "Indole Test: Negative" }
+            }
+        },
+        // Gram Negative Bacilli
+        "Citrobacter freundii": {
+            gramStain: "G-",
+            shape: "Bacilli",
+            tsa: "Growth",
+            macConkey: "F (Yellow)",
+            biochemical: {
+                "MR Test": { result: "negative", description: "Methyl Red Test: Negative" },
+                "VP Test": { result: "positive", description: "Voges-Proskauer Test: Positive" },
+                "Citrate Test": { result: "positive", description: "Citrate Utilization: Positive" },
+                "TSI H2S": { result: "positive", description: "TSI H2S Production: Positive (Black)" },
+                "Urease Test": { result: "negative", description: "Urease Test: Negative" },
+                "Indole Test": { result: "negative", description: "Indole Test: Negative" }
+            }
+        },
+        "E. coli": {
+            gramStain: "G-",
+            shape: "Bacilli",
+            tsa: "Growth",
+            macConkey: "F (Yellow)",
+            biochemical: {
+                "MR Test": { result: "negative", description: "Methyl Red Test: Negative" },
+                "VP Test": { result: "negative", description: "Voges-Proskauer Test: Negative" },
+                "Citrate Test": { result: "negative", description: "Citrate Utilization: Negative" },
+                "TSI H2S": { result: "negative", description: "TSI H2S Production: Negative" },
+                "Urease Test": { result: "negative", description: "Urease Test: Negative" },
+                "Indole Test": { result: "positive", description: "Indole Test: Positive" }
+            }
+        },
+        "Enterobacter aerogenes": {
+            gramStain: "G-",
+            shape: "Bacilli",
+            tsa: "Growth",
+            macConkey: "F (Yellow)",
+            biochemical: {
+                "MR Test": { result: "positive", description: "Methyl Red Test: Positive" },
+                "VP Test": { result: "positive", description: "Voges-Proskauer Test: Positive" },
+                "Citrate Test": { result: "positive", description: "Citrate Utilization: Positive" },
+                "TSI H2S": { result: "negative", description: "TSI H2S Production: Negative" },
+                "Urease Test": { result: "negative", description: "Urease Test: Negative" },
+                "Indole Test": { result: "negative", description: "Indole Test: Negative" }
+            }
+        },
+        // Gram Positive Cocci
+        "Enterococcus faecalis": {
+            gramStain: "G+",
+            shape: "Cocci",
+            tsa: "Growth",
+            macConkey: "NF (Growth)",
+            biochemical: {
+                "MR Test": { result: "negative", description: "Methyl Red Test: Negative" },
+                "VP Test": { result: "positive", description: "Voges-Proskauer Test: Positive" },
+                "Citrate Test": { result: "negative", description: "Citrate Utilization: Negative" },
+                "Catalase Test": { result: "negative", description: "Catalase Test: Negative" },
+                "Blood Hemolysis": { result: "gamma", description: "Blood Agar Hemolysis: Gamma (None)" },
+                "MSA Fermentation": { result: "positive", description: "MSA Fermentation: Positive" }
+            }
+        },
+        "Klebsiella pneumoniae": {
+            gramStain: "G-",
+            shape: "Bacilli",
+            tsa: "Growth",
+            macConkey: "F (Yellow)",
+            biochemical: {
+                "MR Test": { result: "negative", description: "Methyl Red Test: Negative" },
+                "VP Test": { result: "positive", description: "Voges-Proskauer Test: Positive" },
+                "Citrate Test": { result: "positive", description: "Citrate Utilization: Positive" },
+                "TSI H2S": { result: "negative", description: "TSI H2S Production: Negative" },
+                "Urease Test": { result: "positive", description: "Urease Test: Positive" },
+                "Indole Test": { result: "negative", description: "Indole Test: Negative" }
+            }
+        },
+        "Micrococcus luteus": {
+            gramStain: "G+",
+            shape: "Cocci",
+            tsa: "Growth",
+            macConkey: "NF (Growth)",
+            biochemical: {
+                "MR Test": { result: "negative", description: "Methyl Red Test: Negative" },
+                "VP Test": { result: "positive", description: "Voges-Proskauer Test: Positive" },
+                "Citrate Test": { result: "negative", description: "Citrate Utilization: Negative" },
+                "Catalase Test": { result: "positive", description: "Catalase Test: Positive" },
+                "Blood Hemolysis": { result: "gamma", description: "Blood Agar Hemolysis: Gamma (None)" },
+                "MSA Fermentation": { result: "negative", description: "MSA Fermentation: Negative" }
+            }
+        },
+        "Proteus mirabilis": {
+            gramStain: "G-",
+            shape: "Bacilli",
+            tsa: "Growth",
+            macConkey: "NF (Yellow)",
+            biochemical: {
+                "MR Test": { result: "negative", description: "Methyl Red Test: Negative" },
+                "VP Test": { result: "positive", description: "Voges-Proskauer Test: Positive" },
+                "Citrate Test": { result: "positive", description: "Citrate Utilization: Positive" },
+                "TSI H2S": { result: "positive", description: "TSI H2S Production: Positive (Black)" },
+                "Urease Test": { result: "positive", description: "Urease Test: Positive" },
+                "Indole Test": { result: "negative", description: "Indole Test: Negative" }
+            }
+        },
+        "Pseudomonas aeruginosa": {
+            gramStain: "G-",
+            shape: "Bacilli",
+            tsa: "Growth",
+            macConkey: "NF (Yellow)",
+            biochemical: {
+                "MR Test": { result: "negative", description: "Methyl Red Test: Negative" },
+                "VP Test": { result: "positive", description: "Voges-Proskauer Test: Positive" },
+                "Citrate Test": { result: "positive", description: "Citrate Utilization: Positive" },
+                "TSI H2S": { result: "negative", description: "TSI H2S Production: Negative" },
+                "Urease Test": { result: "negative", description: "Urease Test: Negative" },
+                "Indole Test": { result: "negative", description: "Indole Test: Negative" }
+            }
+        },
+        "Salmonella typhimurium": {
+            gramStain: "G-",
+            shape: "Bacilli",
+            tsa: "Growth",
+            macConkey: "NF (Red)",
+            biochemical: {
+                "MR Test": { result: "negative", description: "Methyl Red Test: Negative" },
+                "VP Test": { result: "positive", description: "Voges-Proskauer Test: Positive" },
+                "Citrate Test": { result: "positive", description: "Citrate Utilization: Positive" },
+                "TSI H2S": { result: "positive", description: "TSI H2S Production: Positive (Black)" },
+                "Urease Test": { result: "negative", description: "Urease Test: Negative" },
+                "Indole Test": { result: "negative", description: "Indole Test: Negative" }
+            }
+        },
+        "Serratia marcescens": {
+            gramStain: "G-",
+            shape: "Bacilli",
+            tsa: "Growth",
+            macConkey: "NF (Yellow)",
+            biochemical: {
+                "MR Test": { result: "positive", description: "Methyl Red Test: Positive" },
+                "VP Test": { result: "positive", description: "Voges-Proskauer Test: Positive" },
+                "Citrate Test": { result: "positive", description: "Citrate Utilization: Positive" },
+                "TSI H2S": { result: "negative", description: "TSI H2S Production: Negative" },
+                "Urease Test": { result: "negative", description: "Urease Test: Negative" },
+                "Indole Test": { result: "negative", description: "Indole Test: Negative" }
+            }
+        },
+        "Shigella flexneri": {
+            gramStain: "G-",
+            shape: "Bacilli",
+            tsa: "Growth",
+            macConkey: "NF (Red)",
+            biochemical: {
+                "MR Test": { result: "negative", description: "Methyl Red Test: Negative" },
+                "VP Test": { result: "negative", description: "Voges-Proskauer Test: Negative" },
+                "Citrate Test": { result: "negative", description: "Citrate Utilization: Negative" },
+                "TSI H2S": { result: "negative", description: "TSI H2S Production: Negative" },
+                "Urease Test": { result: "negative", description: "Urease Test: Negative" },
+                "Indole Test": { result: "positive", description: "Indole Test: Positive" }
+            }
+        },
+        "Staphylococcus aureus": {
+            gramStain: "G+",
+            shape: "Cocci",
+            tsa: "Growth",
+            macConkey: "NF (Growth)",
+            biochemical: {
+                "MR Test": { result: "negative", description: "Methyl Red Test: Negative" },
+                "VP Test": { result: "positive", description: "Voges-Proskauer Test: Positive" },
+                "Citrate Test": { result: "positive", description: "Citrate Utilization: Positive" },
+                "Catalase Test": { result: "positive", description: "Catalase Test: Positive" },
+                "Blood Hemolysis": { result: "beta", description: "Blood Agar Hemolysis: Beta (Clear Zone)" },
+                "MSA Fermentation": { result: "positive", description: "MSA Fermentation: Positive" }
+            }
+        },
+        "Staphylococcus epidermidis": {
+            gramStain: "G+",
+            shape: "Cocci",
+            tsa: "Growth",
+            macConkey: "NF (Growth)",
+            biochemical: {
+                "MR Test": { result: "negative", description: "Methyl Red Test: Negative" },
+                "VP Test": { result: "positive", description: "Voges-Proskauer Test: Positive" },
+                "Citrate Test": { result: "positive", description: "Citrate Utilization: Positive" },
+                "Catalase Test": { result: "positive", description: "Catalase Test: Positive" },
+                "Blood Hemolysis": { result: "gamma", description: "Blood Agar Hemolysis: Gamma (None)" },
+                "MSA Fermentation": { result: "negative", description: "MSA Fermentation: Negative" }
+            }
+        },
+        "Streptococcus pyogenes": {
+            gramStain: "G+",
+            shape: "Cocci",
+            tsa: "Growth",
+            macConkey: "NF (Growth)",
+            biochemical: {
+                "MR Test": { result: "negative", description: "Methyl Red Test: Negative" },
+                "VP Test": { result: "negative", description: "Voges-Proskauer Test: Negative" },
+                "Citrate Test": { result: "negative", description: "Citrate Utilization: Negative" },
+                "Catalase Test": { result: "negative", description: "Catalase Test: Negative" },
+                "Blood Hemolysis": { result: "beta", description: "Blood Agar Hemolysis: Beta (Clear Zone)" }
+            }
+        }
+    };
 
     // Test categories for classification
     const testCategories = {
@@ -378,22 +606,20 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
 
-        // Step 3: Additional tests (images that don't fit main categories)
-        const otherImages = findBacteriumImages(state.selectedBacterium, 'other');
-        // Filter out images that have already been displayed
-        const remainingImages = otherImages.filter(img => !state.displayedImages.has(img));
-        
-        if (remainingImages.length > 0) {
-            state.availableTests.step3 = remainingImages.map((image, index) => {
-                // Extract a more descriptive name from the image filename
-                const imageName = image.split('/').pop().replace(/\.(jpg|jpeg|png)$/i, '');
-                const descriptiveName = getDescriptiveTestName(imageName);
+        // Step 3: Biochemical Tests (from the biochemical test database)
+        if (biochemicalTests[state.selectedBacterium] && biochemicalTests[state.selectedBacterium].biochemical) {
+            const bioTests = biochemicalTests[state.selectedBacterium].biochemical;
+            
+            Object.keys(bioTests).forEach((testName, index) => {
+                const testData = bioTests[testName];
                 
-                return {
-                    type: 'other',
-                    images: [image],
-                    displayName: descriptiveName || `Additional Test ${index + 1}`
-                };
+                state.availableTests.step3.push({
+                    type: 'biochemical',
+                    testName: testName,
+                    result: testData.result,
+                    description: testData.description,
+                    displayName: testName
+                });
             });
         }
 
@@ -516,19 +742,31 @@ document.addEventListener('DOMContentLoaded', function() {
             button.addEventListener('click', () => {
                 showTestResult(step, test.type);
 
-                // For Step 2/3, show images in the step's image container
+                // For Step 2/3, show images or test results in the step's image container
                 if (step !== 'step1') {
                     const imageContainer = step === 'step2' ? elements.step2Images : elements.step3Images;
 
-                    test.images.forEach(image => {
-                        const imageDiv = document.createElement('div');
-                        imageDiv.className = 'test-image';
-                        imageDiv.innerHTML = `
-                            <img src="${image}" alt="${test.displayName} Result">
-                            <h3>${test.displayName} Result</h3>
+                    if (test.type === 'biochemical') {
+                        // For biochemical tests, show text result
+                        const resultDiv = document.createElement('div');
+                        resultDiv.className = 'test-image biochemical-result';
+                        resultDiv.innerHTML = `
+                            <h3>${test.displayName}</h3>
+                            <p class="result-text ${test.result}">${test.description}</p>
                         `;
-                        imageContainer.appendChild(imageDiv);
-                    });
+                        imageContainer.appendChild(resultDiv);
+                    } else {
+                        // For image-based tests
+                        test.images.forEach(image => {
+                            const imageDiv = document.createElement('div');
+                            imageDiv.className = 'test-image';
+                            imageDiv.innerHTML = `
+                                <img src="${image}" alt="${test.displayName} Result">
+                                <h3>${test.displayName} Result</h3>
+                            `;
+                            imageContainer.appendChild(imageDiv);
+                        });
+                    }
 
                     imageContainer.style.display = 'block';
                 }

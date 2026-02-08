@@ -840,14 +840,19 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Check how many bacteria remain and show/hide submit button
         const remainingCount = allBacteria.length - Object.keys(state.eliminatedBacteria).length;
-        if (remainingCount === 1) {
-            elements.submitFinalGuessBtn.style.display = 'block';
-        } else {
-            elements.submitFinalGuessBtn.style.display = 'none';
-        }
-
+        
         console.log('Eliminated bacteria:', state.eliminatedBacteria);
         console.log('Remaining bacteria count:', remainingCount);
+        console.log('Submit button element:', elements.submitFinalGuessBtn);
+        
+        if (remainingCount === 1) {
+            console.log('Showing submit button');
+            elements.submitFinalGuessBtn.style.display = 'block';
+            elements.submitFinalGuessBtn.disabled = false;
+        } else {
+            console.log('Hiding submit button');
+            elements.submitFinalGuessBtn.style.display = 'none';
+        }
     }
 
 
@@ -894,20 +899,34 @@ document.addEventListener('DOMContentLoaded', function() {
             title.textContent = test.displayName;
             card.appendChild(title);
 
-            test.images.forEach(image => {
-                // Only show image if it hasn't been displayed in results yet
-                if (!displayedResultImages.has(image)) {
-                    const img = document.createElement('img');
-                    img.src = image;
-                    img.alt = `${test.displayName} Result`;
-                    card.appendChild(img);
-                    displayedResultImages.add(image);
-                }
-            });
-
-            // Only add card if it has content (title + at least one image)
-            if (card.children.length > 1) {
+            // Handle different test types
+            if (test.type === 'biochemical') {
+                // For biochemical tests, show text result
+                const resultText = document.createElement('p');
+                resultText.className = `result-text ${test.result}`;
+                resultText.textContent = test.description;
+                resultText.style.marginTop = '10px';
+                resultText.style.padding = '8px';
+                resultText.style.borderRadius = '5px';
+                card.appendChild(resultText);
                 elements.allTests.appendChild(card);
+            } else if (test.images && test.images.length > 0) {
+                // For image-based tests
+                test.images.forEach(image => {
+                    // Only show image if it hasn't been displayed in results yet
+                    if (!displayedResultImages.has(image)) {
+                        const img = document.createElement('img');
+                        img.src = image;
+                        img.alt = `${test.displayName} Result`;
+                        card.appendChild(img);
+                        displayedResultImages.add(image);
+                    }
+                });
+
+                // Only add card if it has content (title + at least one image)
+                if (card.children.length > 1) {
+                    elements.allTests.appendChild(card);
+                }
             }
         });
     }
